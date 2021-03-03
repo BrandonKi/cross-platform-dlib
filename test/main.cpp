@@ -16,6 +16,7 @@
 #include <vector>
 
 #include "./widget.hpp"
+#include "../dlib.h"
 
 #if defined(OS_LINUX)
 typedef void* dlib_handle;
@@ -27,76 +28,23 @@ typedef HINSTANCE dlib_handle;
 #else
 #endif
 
-static dlib_handle load_lib(const TCHAR *path);
-static Widget* instantiate(const dlib_handle handle);
-static void close_lib(dlib_handle handle);
-
 int main(int argc, char **argv) {
 
     // load the lib
     #ifdef OS_WINDOWS
-    dlib_handle handle1 = load_lib(TEXT("./widget1.dll"));
-    dlib_handle handle2 = load_lib(TEXT("./widget2.dll"));
+    dlib lib(TEXT("./widget1.dll"));
     #else
     dlib_handle handle1 = load_lib(TEXT("./libwidget1.so"));
-    dlib_handle handle2 = load_lib(TEXT("./libwidget2.so"));
     #endif
-
     // instanitate/contruct an instance of the class
-    Widget* widget1 = instantiate(handle1);
-    Widget* widget2 = instantiate(handle2);
+    // typedef Widget* (*factory)();
+
+    Widget* widget1 = (reinterpret_cast<Widget*(*)()>(lib.get_func("factory")))();
+    
 
     // call member function
     std::cout << widget1->message() << std::endl;
-    std::cout << widget2->message() << std::endl;
 
     // close lib
-    close_lib(handle1);
-    close_lib(handle2);
+    lib.close();
 }
-
-static dlib_handle load_lib(const TCHAR *path) {
-
-    #if defined(OS_LINUX)
-    std::cout << "Trying to open: " << path << std::endl;
-    return dlopen(path, RTLD_NOW);
-    #elif defined(OS_WINDOWS)
-    std::wcout << L"Trying to open: " << path << std::endl;
-    return LoadLibrary(path);
-    #elif defined(OS_MAC)
-    #else
-    #endif
-
-}
-
-static Widget* instantiate(const dlib_handle handle) {
- 
-    typedef Widget* (*fptr)();
-
-    if (handle == nullptr) return nullptr;
-
-    #if defined(OS_LINUX)
-    void *maker = dlsym(handle , "factory");
-    #elif defined(OS_WINDOWS)
-    fptr maker = reinterpret_cast<fptr>(GetProcAddress(handle, "factory"));
-    #elif defined(OS_MAC)
-    #else
-    #endif
-
-    if (maker == nullptr) return nullptr;
-
-    fptr func = reinterpret_cast<fptr>(maker);
-
-    return func();
-}
-
-static void close_lib(dlib_handle handle) {
-    #if defined(OS_LINUX)
-    dlclose(handle);
-    #elif defined(OS_WINDOWS)
-    FreeLibrary(handle);
-    #elif defined(OS_MAC)
-    #else
-    #endif
-}
-
