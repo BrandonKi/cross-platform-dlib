@@ -37,8 +37,7 @@ int main(int argc, char **argv) {
     dlib_handle handle1 = load_lib(TEXT("./libwidget1.so"));
     #endif
     // instanitate/contruct an instance of the class
-    // typedef Widget* (*factory)();
-
+    typedef Widget* (*factory)();
     Widget* widget1 = (reinterpret_cast<Widget*(*)()>(lib.get_func("factory")))();
     
 
@@ -47,4 +46,11 @@ int main(int argc, char **argv) {
 
     // close lib
     lib.close();
+
+    // this can all be done in one line, but plz don't actually do this
+    #ifdef OS_WINDOWS
+    std::cout<<(reinterpret_cast<Widget*(*)()>(dlib{TEXT("./widget2.dll")}.get_func("factory")))()->message()<<std::endl;
+    #else
+    std::cout<<(reinterpret_cast<Widget*(*)()>(dlib{TEXT("./libwidget1.so")}.get_func("factory")))()->message()<<std::endl;
+    #endif
 }
