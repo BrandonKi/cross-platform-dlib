@@ -9,7 +9,6 @@
 #else
 #endif
 
-#include <dlfcn.h>
 #include <iostream>
 #include <fstream>
 #include <stdexcept>
