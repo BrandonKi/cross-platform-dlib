@@ -8,6 +8,6 @@ public:
     }
 };
 
-extern "C" Widget* factory(void) {
+__declspec(dllexport) extern "C" Widget* factory(void) {
     return static_cast<Widget*>(new TestWidget1);
 }
