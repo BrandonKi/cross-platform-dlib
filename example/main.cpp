@@ -34,8 +34,13 @@ static void close_lib(dlib_handle handle);
 int main(int argc, char **argv) {
 
     // load the lib
+    #ifdef OS_WINDOWS
+    dlib_handle handle1 = load_lib(TEXT("./widget1.dll"));
+    dlib_handle handle2 = load_lib(TEXT("./widget2.dll"));
+    #else
     dlib_handle handle1 = load_lib(TEXT("./libwidget1.so"));
     dlib_handle handle2 = load_lib(TEXT("./libwidget2.so"));
+    #endif
 
     // instanitate/contruct an instance of the class
     Widget* widget1 = instantiate(handle1);
