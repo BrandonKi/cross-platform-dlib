@@ -3,6 +3,12 @@
 
 #include <string>
 
+#if defined(_WIN32) 
+#define DLL_EXPORT __declspec(dllexport)
+#else
+#define DLL_EXPORT
+#endif
+
 // pure virtual class!
 class Widget {
 

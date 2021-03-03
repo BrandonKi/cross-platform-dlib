@@ -1,4 +1,4 @@
-#if defined(unix)
+#if defined(unix) || defined(__unix__) || defined(__unix)
 #define OS_LINUX
 #include <dlfcn.h>
 #elif defined(_WIN32)
@@ -9,6 +9,7 @@
 #else
 #endif
 
+#include <dlfcn.h>
 #include <iostream>
 #include <fstream>
 #include <stdexcept>
@@ -20,6 +21,7 @@
 #if defined(OS_LINUX)
 typedef void* dlib_handle;
 #define TCHAR char
+#define TEXT(x) x
 #elif defined(OS_WINDOWS)
 typedef HINSTANCE dlib_handle;
 #elif defined(OS_MAC)
@@ -33,8 +35,8 @@ static void close_lib(dlib_handle handle);
 int main(int argc, char **argv) {
 
     // load the lib
-    dlib_handle handle1 = load_lib(TEXT("./widget1.dll"));
-    dlib_handle handle2 = load_lib(TEXT("./widget2.dll"));
+    dlib_handle handle1 = load_lib(TEXT("./libwidget1.so"));
+    dlib_handle handle2 = load_lib(TEXT("./libwidget2.so"));
 
     // instanitate/contruct an instance of the class
     Widget* widget1 = instantiate(handle1);
@@ -50,11 +52,12 @@ int main(int argc, char **argv) {
 }
 
 static dlib_handle load_lib(const TCHAR *path) {
-    std::wcout << L"Trying to open: " << path << std::endl;
 
     #if defined(OS_LINUX)
-    return dlopen(path.data() , RTLD_NOW);
+    std::cout << "Trying to open: " << path << std::endl;
+    return dlopen(path, RTLD_NOW);
     #elif defined(OS_WINDOWS)
+    std::wcout << L"Trying to open: " << path << std::endl;
     return LoadLibrary(path);
     #elif defined(OS_MAC)
     #else
