@@ -78,7 +78,7 @@ static Widget* instantiate(const dlib_handle handle) {
     #if defined(OS_LINUX)
     void *maker = dlsym(handle , "factory");
     #elif defined(OS_WINDOWS)
-    fptr maker = (fptr) GetProcAddress(handle, "factory");
+    fptr maker = reinterpret_cast<fptr>(GetProcAddress(handle, "factory"));
     #elif defined(OS_MAC)
     #else
     #endif
