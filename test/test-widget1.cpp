@@ -1,7 +1,7 @@
 #include <string>
 #include "./widget.hpp"
 
-class TestWidget1 : public Widget  {
+class TestWidget1 : public Widget {
 public:
     std::string message(void) {
         return "Hello. I'm Test Widget1";

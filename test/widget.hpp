@@ -9,7 +9,7 @@
 #define DLL_EXPORT
 #endif
 
-// pure virtual class!
+// pure virtual class
 class Widget {
 
 public:

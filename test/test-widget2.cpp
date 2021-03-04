@@ -4,7 +4,7 @@
 class TestWidget2 : public Widget {
 public:
     std::string message(void) {
-        return "Hello. I'm Test Widget2\n";
+        return "Hello. I'm Test Widget2";
     }
 };
 
