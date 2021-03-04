@@ -45,7 +45,7 @@ int main(int argc, char **argv) {
     std::cout << widget1->message() << std::endl;
 
     // close lib
-    lib.close();
+    lib.close_lib();
 
     // this can all be done in one line, but plz don't actually do this
     #ifdef OS_WINDOWS

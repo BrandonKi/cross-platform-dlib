@@ -19,7 +19,7 @@ using dlib_handle = HINSTANCE;
 #else
 #endif
 
-
+#ifdef __cplusplus
 class dlib {
     private:
         const TCHAR *m_path;
@@ -57,7 +57,7 @@ class dlib {
             #endif
         }
 
-        void close() {
+        void close_lib() {
             #if defined(OS_LINUX)
             dlclose(m_handle);
             #elif defined(OS_WINDOWS)
@@ -67,3 +67,38 @@ class dlib {
             #endif
         }
 };
+
+#else
+
+dlib_handle load_lib(const TCHAR *path) {
+    #if defined(OS_LINUX)
+    return dlopen(path, RTLD_NOW);
+    #elif defined(OS_WINDOWS)
+    return LoadLibrary(path);
+    #elif defined(OS_MAC)
+    #else
+    #endif
+}
+
+void *get_func(dlib_handle handle, const char *func_name) {
+    if (handle == nullptr) return nullptr;
+    #if defined(OS_LINUX)
+    return dlsym(handle , func_name);
+    #elif defined(OS_WINDOWS)
+    return reinterpret_cast<void*>(GetProcAddress(handle, func_name));
+    #elif defined(OS_MAC)
+    #else
+    #endif
+}
+
+void close_lib(dlib_handle handle) {
+    #if defined(OS_LINUX)
+    dlclose(handle);
+    #elif defined(OS_WINDOWS)
+    FreeLibrary(handle);
+    #elif defined(OS_MAC)
+    #else
+    #endif
+}
+
+#endif
