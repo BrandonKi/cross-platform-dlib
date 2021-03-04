@@ -45,7 +45,7 @@ class dlib {
         dlib(const TCHAR *path):
             m_path(path), m_handle()
         {
-            m_handle = load_lib(path);
+            m_handle = load_lib();
         }
 
         ~dlib() = default;
