@@ -37,8 +37,9 @@ int main(int argc, char **argv) {
     dlib lib("./libwidget1.so");
     #endif
     // instanitate/contruct an instance of the class
-    typedef Widget* (*factory)();
-    Widget* widget1 = (reinterpret_cast<Widget*(*)()>(lib.get_func("factory")))();
+    typedef Widget* (*func)();
+    func f = reinterpret_cast<func>(lib.get_func("factory"));
+    Widget* widget1 = f();
     
 
     // call member function
