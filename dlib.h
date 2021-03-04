@@ -31,12 +31,13 @@ class dlib {
         dlib(const TCHAR *path):
             m_path(path), m_handle()
         {
-            m_handle = load_lib();
+            m_handle = load_lib(path);
         }
 
         ~dlib() = default;
 
-        dlib_handle load_lib() {
+        dlib_handle load_lib(const TCHAR * path) {
+            m_path = path;
             #if defined(OS_LINUX)
             return dlopen(m_path, RTLD_NOW);
             #elif defined(OS_WINDOWS)
