@@ -28,7 +28,7 @@ using dlib_handle = HINSTANCE;
 #endif
 
 #ifdef __cplusplus
-class dlib {
+class dlib final {
     private:
         const TCHAR *m_path;
         dlib_handle m_handle;
@@ -56,7 +56,7 @@ class dlib {
          * @param path relative or absolute path to a dynamic lib
          * @return dlib_handle handle to the dynamic lib
          */
-        dlib_handle load_lib() {
+        [[nodiscard]] inline dlib_handle load_lib() const {
             #if defined(OS_LINUX)
             return dlopen(m_path, RTLD_NOW);
             #elif defined(OS_WINDOWS)
@@ -73,7 +73,7 @@ class dlib {
          * @param func_name name of function to get from dynamic lib
          * @return void* function pointer to the function
          */
-        void *get_func(const char *func_name) {
+        [[nodiscard]] inline void *get_func(const char *func_name) const {
             if (m_handle == nullptr) return nullptr;
             #if defined(OS_LINUX)
             return dlsym(m_handle , func_name);
@@ -88,7 +88,7 @@ class dlib {
          * @brief closes the dynamic lib
          * 
          */
-        void close_lib() {
+        inline void close_lib() {
             #if defined(OS_LINUX)
             dlclose(m_handle);
             #elif defined(OS_WINDOWS)
@@ -106,7 +106,7 @@ class dlib {
  * @param path path to a dynamic lib
  * @return dlib_handle handle to the dynamic lib
  */
-dlib_handle load_lib(const TCHAR *path) {
+inline dlib_handle load_lib(const TCHAR *path) {
     #if defined(OS_LINUX)
     return dlopen(path, RTLD_NOW);
     #elif defined(OS_WINDOWS)
@@ -124,7 +124,7 @@ dlib_handle load_lib(const TCHAR *path) {
  * @param func_name name of the funcion to get
  * @return void* function pointer to the function
  */
-void *get_func(dlib_handle handle, const char *func_name) {
+inline void *get_func(dlib_handle handle, const char *func_name) {
     if (handle == nullptr) return nullptr;
     #if defined(OS_LINUX)
     return dlsym(handle , func_name);
@@ -140,7 +140,7 @@ void *get_func(dlib_handle handle, const char *func_name) {
  * 
  * @param handle handle for the dynamic lib
  */
-void close_lib(dlib_handle handle) {
+inline void close_lib(dlib_handle handle) {
     #if defined(OS_LINUX)
     dlclose(handle);
     #elif defined(OS_WINDOWS)
